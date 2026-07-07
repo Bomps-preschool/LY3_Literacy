@@ -862,15 +862,8 @@ stopSpeech();
 
 button.classList.add("correct");
 
-correctSound.currentTime=0;
+correctSound.currentTime = 0;
 correctSound.play();
-
-setTimeout(()=>{
-
-clapSound.currentTime=0;
-clapSound.play();
-
-},500);
 
 launchConfetti();
 
