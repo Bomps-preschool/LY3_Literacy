@@ -858,37 +858,44 @@ handleWrong(selected);
 
 function handleCorrect(button){
 
-stopSpeech();
+    stopSpeech();
 
-button.classList.add("correct");
+    button.classList.add("correct");
 
-correctSound.currentTime = 0;
-correctSound.play();
+    score++;
+    scoreText.innerHTML = score;
 
-launchConfetti();
+    const q = questions[currentQuestion];
 
-score++;
+    objectName.innerHTML = makeAnswerWord(q);
 
-scoreText.innerHTML=score;
+    launchConfetti();
 
-const q=questions[currentQuestion];
+    // Correct sound
+    correctSound.pause();
+    correctSound.currentTime = 0;
+    correctSound.play();
 
-objectName.innerHTML=makeAnswerWord(q);
+    // Clap sound
+    clapSound.pause();
+    clapSound.currentTime = 0;
+    clapSound.play();
 
-speak(
+    // Stop clap after 0.8 second
+    setTimeout(() => {
+        clapSound.pause();
+        clapSound.currentTime = 0;
+    }, 800);
 
-"Excellent! "+
-q.word+
-". The missing vowel is "+
-q.vowel
+    // Speak after clap has stopped
+    setTimeout(() => {
+        speak("Excellent! " + q.word + ". The missing vowel is " + q.vowel);
+    }, 900);
 
-);
-
-setTimeout(()=>{
-
-nextQuestion();
-
-},2500);
+    // Load next question after speech
+    setTimeout(() => {
+        nextQuestion();
+    }, 4000);
 
 }
 
