@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vowel Fun</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#d7f5ff,#fff9d6);border:6px solid gold;overflow:hidden}
+#splash,#game,#end{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
+#game,#end{display:none}
+img{max-width:220px;max-height:220px;object-fit:contain}
+#buttons{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:20px}
+.btn{width:80px;height:80px;border-radius:50%;font-size:38px;font-weight:bold;border:4px solid #1976d2;background:#fff;cursor:pointer}
+.correct{background:#9be79b}.wrong{background:#ffb0b0}.glow{box-shadow:0 0 20px gold}
+#confetti{position:fixed;inset:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="confetti"></div>
+
+<div id="splash">
+<img src="Assets/innovinelogo.png">
+<h1>Vowel Fun!</h1>
+<h2>A E I O U</h2>
+<p>Loading...</p>
+</div>
+
+<div id="game">
+<h2 id="question"></h2>
+<img id="pic">
+<h1 id="word"></h1>
+<div id="buttons"></div>
+<p id="retry">Retry Remaining : 1</p>
+<p>⭐ Score <span id="score">0</span>/10</p>
+</div>
+
+<div id="end">
+<h1>🎉 Amazing Job!</h1>
+<h2 id="final"></h2>
+<button onclick="restart()">Play Again</button>
+</div>
+
+<script>
+const questions=[
+["apple.jpg","APPLE",0,"A"],["elephant.png","ELEPHANT",0,"E"],
+["fish.png","FISH",1,"I"],["orange.jpg","ORANGE",0,"O"],
+["umbrella.jpg","UMBRELLA",0,"U"],["ant.png","ANT",0,"A"],
+["egg.png","EGG",0,"E"],["icecubes.png","ICECUBES",0,"I"],
+["orangefruit.png","ORANGE",0,"O"],["unicycle.jpg","UNICYCLE",0,"U"]
+];
+const correct=new Audio("Assets/correct.mp3");
+const wrong=new Audio("Assets/wrong.mp3");
+let i=0,score=0,tries=1,muted=false;
+const vowels=["A","E","I","O","U"];
+const q=document.getElementById("question"),pic=document.getElementById("pic"),
+word=document.getElementById("word"),retry=document.getElementById("retry"),
+scoreEl=document.getElementById("score"),buttons=document.getElementById("buttons");
+buttons.innerHTML=vowels.map(v=>`<button class="btn" data-v="${v}">${v}</button>`).join("");
+buttons.onclick=e=>{if(!e.target.dataset.v)return;check(e.target.dataset.v,e.target)};
+function speak(t){if(muted)return;speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t));}
+function show(){
+tries=1;retry.textContent="Retry Remaining : 1";
+document.querySelectorAll(".btn").forEach(b=>b.className="btn");
+let x=questions[i];
+q.textContent="What vowel is missing?";
+pic.src="Assets/"+x[0];
+let s=x[1].split("");s[x[2]]="_";word.textContent=s.join("");
+speak(q.textContent+" "+x[1]);
+}
+function check(v,b){
+let x=questions[i];
+if(v===x[3]){
+correct.currentTime=0;correct.play();
+score++;scoreEl.textContent=score;
+let s=x[1].split("");s[x[2]]=`<${x[3]}>`;
+setTimeout(next,1200);
+}else{
+wrong.currentTime=0;wrong.play();
+if(tries--){
+retry.textContent="Retry Remaining : 0";
+document.querySelector(`[data-v="${x[3]}"]`).classList.add("glow");
+speak("Try again");
+}else setTimeout(next,1000);
+}
+}
+function next(){i++;if(i>=questions.length){game.style.display="none";end.style.display="flex";final.textContent=`Score ${score}/10`;speak("Congratulations");return;}show();}
+function restart(){i=0;score=0;scoreEl.textContent=0;end.style.display="none";game.style.display="flex";show();}
+setTimeout(()=>{splash.style.display="none";game.style.display="flex";show();},2000);
+</script>
+</body></html>
