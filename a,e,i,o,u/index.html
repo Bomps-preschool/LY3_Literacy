@@ -554,7 +554,6 @@ instruction:"Find the missing vowel."
 
 const correctSound=new Audio("Assets/correct.mp3");
 const wrongSound=new Audio("Assets/wrong.mp3");
-const clapSound=new Audio("Assets/free_claps.mp3");
 
 // ==========================
 // VARIABLES
@@ -840,22 +839,6 @@ const selected=document.querySelector(
 
 if(letter===q.vowel){
 
-handleCorrect(selected);
-
-}
-
-else{
-
-handleWrong(selected);
-
-}
-
-}
-
-// =====================================
-// CORRECT ANSWER
-// =====================================
-
 function handleCorrect(button){
 
     stopSpeech();
@@ -871,31 +854,15 @@ function handleCorrect(button){
 
     launchConfetti();
 
-    // Correct sound
+    // Play only the correct sound
     correctSound.pause();
     correctSound.currentTime = 0;
     correctSound.play();
 
-    // Clap sound
-    clapSound.pause();
-    clapSound.currentTime = 0;
-    clapSound.play();
-
-    // Stop clap after 0.8 second
-    setTimeout(() => {
-        clapSound.pause();
-        clapSound.currentTime = 0;
-    }, 800);
-
-    // Speak after clap has stopped
-    setTimeout(() => {
-        speak("Excellent! " + q.word + ". The missing vowel is " + q.vowel);
-    }, 900);
-
-    // Load next question after speech
+    // Move to the next question
     setTimeout(() => {
         nextQuestion();
-    }, 4000);
+    }, 1500);
 
 }
 
@@ -933,46 +900,25 @@ return;
 
 }
 
-showCorrectAnswer();
-
-}
-
-// =====================================
-// SHOW CORRECT ANSWER
-// =====================================
-
 function showCorrectAnswer(){
 
-stopSpeech();
+    stopSpeech();
 
-const q=questions[currentQuestion];
+    const q = questions[currentQuestion];
 
-const correctButton=document.querySelector(
+    const correctButton = document.querySelector(
+        '.vowelBtn[data-vowel="' + q.vowel + '"]'
+    );
 
-'.vowelBtn[data-vowel="'+q.vowel+'"]'
+    correctButton.classList.remove("glow");
+    correctButton.classList.add("correct");
 
-);
+    objectName.innerHTML = makeAnswerWord(q);
 
-correctButton.classList.remove("glow");
-
-correctButton.classList.add("correct");
-
-objectName.innerHTML=makeAnswerWord(q);
-
-speak(
-
-"The correct vowel is "+
-q.vowel+
-". "+
-q.word
-
-);
-
-setTimeout(()=>{
-
-nextQuestion();
-
-},2500);
+    // Move to the next question
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
 
 }
 // =====================================
@@ -991,7 +937,9 @@ return;
 
 }
 
-loadQuestion();
+setTimeout(() => {
+    loadQuestion();
+}, 300);
 
 }
 
@@ -1054,7 +1002,9 @@ endScreen.style.display="none";
 
 gameContainer.style.display="flex";
 
-loadQuestion();
+setTimeout(() => {
+    loadQuestion();
+}, 300);
 
 });
 
@@ -1074,7 +1024,9 @@ retry=1;
 
 scoreText.innerHTML="0";
 
-loadQuestion();
+setTimeout(() => {
+    loadQuestion();
+}, 300);
 
 });
 
@@ -1155,7 +1107,9 @@ splashScreen.style.display="none";
 
 gameContainer.style.display="flex";
 
-loadQuestion();
+setTimeout(() => {
+    loadQuestion();
+}, 300);
 
 },2500);
 
